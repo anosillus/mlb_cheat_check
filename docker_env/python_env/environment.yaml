@@ -1,0 +1,45 @@
+name: python37
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7.*
+  # - cudatoolkit=10.2.*
+  # - cudnn=7.*
+  # - opencv=4.*
+  # - pydotplus
+  # - python-graphviz
+  # - networkx
+  # - tensorflow-gpu
+  # - pytorch-gpu
+  # - bokeh
+  # - category_encoders
+  # - graphviz
+  - feather-format
+  - ipykernel
+  - ipython-sql
+  - ipywidgets
+  - matplotlib
+  - mypy
+  - numba
+  - numpy
+  - pandas
+  - pillow
+  - python-dotenv
+  - records
+  - requests
+  - scikit-image
+  - scikit-learn
+  - scipy
+  - seaborn
+  - statsmodels
+  - tqdm
+  - typing
+  - pip:
+      # - imblearn
+      - japanize_matplotlib
+      - optuna
+      - plotly
+
+prefix: /opt/conda/envs/python37

@@ -1,0 +1,84 @@
+version: "3"
+
+services:
+  rstudio:
+    container_name: ds_rstudio_container
+    restart: always
+    build:
+      context: ./R_env
+    volumes:
+      - ./../main:/home/rstudio/main
+      - ./../playground:/home/rstudio/playground
+      - ./../data:/home/rstudio/data
+      - ./../src:/home/rstudio/src
+      - ./../reports:/rstudio/reports
+      - ./../docker_env/R_env:/rstudio/env
+    ports:
+      - "8787:8787"
+    environment:
+      DISABLE_AUTH: "TRUE"
+      ROOT: "TRUE"
+      TZ: Asia/Tokyo
+  jupyter:
+    container_name: ds_jupyter_container
+    restart: always
+    build:
+      context: ./python_env
+    volumes:
+      - ./../main:/home/main
+      - ./../template:/home/template
+      - ./../playground:/home/playground
+      - ./../data:/home/data
+      - ./../src:/home/src
+      - ./../reports:/home/reports
+      - ./../docker_env/python_env:/home/env
+    ports:
+      - "8888:8888"
+    environment:
+      ROOT: "TRUE"
+      TZ: Asia/Tokyo
+    command: "/opt/conda/bin/jupyter lab --notebook-dir=/home/main"
+  postgres:
+    container_name: ds_postgres_container
+    restart: always
+    image: postgres:latest
+    networks:
+      ds_net:
+        ipv4_address: 172.28.1.2
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: Asia/Tokyo
+    ports:
+      - 5432:5432
+    # volumes:
+    # - ./../data/db:/var/lib/postgresql/data
+    # - ./../data/db_init:/docker-entrypoint-initdb.d/
+  pgAdmin:
+    container_name: ds_pgAdmin_container
+    image: dpage/pgadmin4
+    networks:
+      ds_net:
+        ipv4_address: 172.28.1.3
+    restart: always
+    ports:
+      # - "8000:80"
+      - "80:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+      TZ: Asia/Tokyo
+    # volumes:
+    # - ./../data/db_conf:/var/lib/pgadmin
+    # - ./../data/db_conf/pgadmin:/var/lib/pgadmin
+    # - ./../data/db_conf/servers.json:/pgadmin4/servers.json
+    # - ./../data/db:/root/.pgadmin
+    # - /path/to/certificate.cert:/certs/server.cert \
+    # - /path/to/certificate.key:/certs/server.key \
+networks:
+  ds_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

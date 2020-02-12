@@ -22,29 +22,29 @@ services:
       DISABLE_AUTH: "TRUE"
       ROOT: "TRUE"
       TZ: Asia/Tokyo
-  jupyter:
-    container_name: ds_jupyter_container
-    restart: always
-    build:
-      context: ./python_env
-    networks:
-      ds_net:
-        ipv4_address: 172.28.1.4
-    # postgres://postgres:postgres@172.28.1.2:5432/mlb_test
-    volumes:
-      - ./../main:/home/main
-      - ./../template:/home/template
-      - ./../playground:/home/playground
-      - ./../data:/home/data
-      - ./../src:/home/src
-      - ./../reports:/home/reports
-      - ./../docker_env/python_env:/home/env
-    ports:
-      - "8888:8888"
-    environment:
-      ROOT: "TRUE"
-      TZ: Asia/Tokyo
-    command: "/opt/conda/bin/jupyter lab --notebook-dir=/home/main"
+  # jupyter:
+  #   container_name: ds_jupyter_container
+  #   restart: always
+  #   build:
+  #     context: ./python_env
+  #   networks:
+  #     ds_net:
+  #       ipv4_address: 172.28.1.4
+  #   # postgres://postgres:postgres@172.28.1.2:5432/mlb_test
+  #   volumes:
+  #     - ./../main:/home/main
+  #     - ./../template:/home/template
+  #     - ./../playground:/home/playground
+  #     - ./../data:/home/data
+  #     - ./../src:/home/src
+  #     - ./../reports:/home/reports
+  #     - ./../docker_env/python_env:/home/env
+  #   ports:
+  #     - "8888:8888"
+  #   environment:
+  #     ROOT: "TRUE"
+  #     TZ: Asia/Tokyo
+  #   command: "/opt/conda/bin/jupyter lab --notebook-dir=/home/main"
   postgres:
     container_name: ds_postgres_container
     restart: always

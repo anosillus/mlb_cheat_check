@@ -2,10 +2,13 @@ version: "3"
 
 services:
   rstudio:
-    container_name: ds_rstudio_container
+    container_name: mlb_rstudio_container
     restart: always
     build:
       context: ./R_env
+    networks:
+      ds_net:
+        ipv4_address: 172.28.1.1
     volumes:
       - ./../main:/home/rstudio/main
       - ./../playground:/home/rstudio/playground
@@ -24,6 +27,10 @@ services:
     restart: always
     build:
       context: ./python_env
+    networks:
+      ds_net:
+        ipv4_address: 172.28.1.4
+    # postgres://postgres:postgres@172.28.1.2:5432/mlb_test
     volumes:
       - ./../main:/home/main
       - ./../template:/home/template
@@ -52,8 +59,8 @@ services:
       TZ: Asia/Tokyo
     ports:
       - 5432:5432
-    # volumes:
-    # - ./../data/db:/var/lib/postgresql/data
+    volumes:
+      - ./../data/db:/var/lib/postgresql/data
     # - ./../data/db_init:/docker-entrypoint-initdb.d/
   pgAdmin:
     container_name: ds_pgAdmin_container
@@ -68,9 +75,10 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin
       PGADMIN_DEFAULT_PASSWORD: pgadmin
+      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
       TZ: Asia/Tokyo
-    # volumes:
-    # - ./../data/db_conf:/var/lib/pgadmin
+    volumes:
+      - ./../data/db_conf/servers.json:/pgadmin4/servers.json
     # - ./../data/db_conf/pgadmin:/var/lib/pgadmin
     # - ./../data/db_conf/servers.json:/pgadmin4/servers.json
     # - ./../data/db:/root/.pgadmin

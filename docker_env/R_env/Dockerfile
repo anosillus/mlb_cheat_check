@@ -7,8 +7,10 @@ RUN apt-get update && \
     install2.r --error \
     --deps TRUE \
     DBI \
+    odbc \
     RPostgres \
     doParallel \
     feather \
     lintr \
-    renv
+    renv \
+    mlbgameday

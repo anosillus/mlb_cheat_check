@@ -22,29 +22,29 @@ services:
       DISABLE_AUTH: "TRUE"
       ROOT: "TRUE"
       TZ: Asia/Tokyo
-  # jupyter:
-  #   container_name: ds_jupyter_container
-  #   restart: always
-  #   build:
-  #     context: ./python_env
-  #   networks:
-  #     ds_net:
-  #       ipv4_address: 172.28.1.4
-  #   # postgres://postgres:postgres@172.28.1.2:5432/mlb_test
-  #   volumes:
-  #     - ./../main:/home/main
-  #     - ./../template:/home/template
-  #     - ./../playground:/home/playground
-  #     - ./../data:/home/data
-  #     - ./../src:/home/src
-  #     - ./../reports:/home/reports
-  #     - ./../docker_env/python_env:/home/env
-  #   ports:
-  #     - "8888:8888"
-  #   environment:
-  #     ROOT: "TRUE"
-  #     TZ: Asia/Tokyo
-  #   command: "/opt/conda/bin/jupyter lab --notebook-dir=/home/main"
+  jupyter:
+    container_name: ds_jupyter_container
+    restart: always
+    build:
+      context: ./python_env
+    networks:
+      ds_net:
+        ipv4_address: 172.28.1.4
+    # postgres://postgres:postgres@172.28.1.2:5432/mlb_test
+    volumes:
+      - ./../main:/home/main
+      - ./../template:/home/template
+      - ./../playground:/home/playground
+      - ./../data:/home/data
+      - ./../src:/home/src
+      - ./../reports:/home/reports
+      - ./../docker_env/python_env:/home/env
+    ports:
+      - "8888:8888"
+    environment:
+      ROOT: "TRUE"
+      TZ: Asia/Tokyo
+    command: "/opt/conda/bin/jupyter lab --notebook-dir=/home/main"
   postgres:
     container_name: ds_postgres_container
     restart: always
@@ -61,6 +61,7 @@ services:
       - 5432:5432
     volumes:
       - ./../data/db:/var/lib/postgresql/data
+      - ./../data/backup:/var/lib/postgresql/backup
     # - ./../data/db_init:/docker-entrypoint-initdb.d/
   pgAdmin:
     container_name: ds_pgAdmin_container
@@ -84,6 +85,18 @@ services:
     # - ./../data/db:/root/.pgadmin
     # - /path/to/certificate.cert:/certs/server.cert \
     # - /path/to/certificate.key:/certs/server.key \
+  pgweb:
+    container_name: ds_pgweb_container
+    restart: always
+    image: sosedoff/pgweb
+    networks:
+      ds_net:
+        ipv4_address: 172.28.1.5
+    ports:
+      - "8081:8081"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@172.28.1.2:5432/postgres?sslmode=disable
+
 networks:
   ds_net:
     ipam:

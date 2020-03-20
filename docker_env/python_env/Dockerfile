@@ -3,14 +3,14 @@ FROM nvidia/cuda:10.2-cudnn7-runtime-ubuntu18.04
 # Add this to the path for TensorFlow
 ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-ENV ANACONDA_VERSION=2019.10
 RUN apt-get update --fix-missing && \
     apt-get install -y wget curl bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+# ENV ANACONDA_VERSION=2019.10
 # RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh -O ~/anaconda.sh && \
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh -O ~/anaconda.sh && \
-    /bin/bash ~/anaconda.sh -b -p /opt/conda && \
-    rm ~/anaconda.sh && \
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh && \
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
     find /opt/conda/ -follow -type f -name '*.a' -delete && \
@@ -83,7 +83,7 @@ RUN $CONDA_DIR/bin/conda config --system --prepend channels conda-forge && \
     echo "conda activate $(head -1 /tmp/environment.yaml | cut -d' ' -f2)" >> ~/.bashrc && \
     $CONDA_DIR/bin/conda run -n python37 ipython kernel install --user --name=python37 && \
     rm /tmp/environment.yaml && \
-    $CONDA_DIR/bin/conda clean --all -f -y
+    $CONDA_DIR/bin/conda clean --all --yes --dry-run
 ENV PATH /opt/conda/envs/$(head -1 /tmp/environment.yaml | cut -d' ' -f2)/bin:$PATH
 EXPOSE 8888
 ENTRYPOINT [ "/usr/bin/tini", "--" ]

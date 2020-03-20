@@ -6,6 +6,7 @@ services:
     restart: always
     build:
       context: ./R_env
+    image: mlb_r:v2
     networks:
       ds_net:
         ipv4_address: 172.28.1.1
@@ -23,10 +24,11 @@ services:
       ROOT: "TRUE"
       TZ: Asia/Tokyo
   jupyter:
-    container_name: ds_jupyter_container
+    container_name: mlb_jupyter_container
     restart: always
     build:
       context: ./python_env
+    image: mlb_jupyter:v2
     networks:
       ds_net:
         ipv4_address: 172.28.1.4
@@ -46,7 +48,7 @@ services:
       TZ: Asia/Tokyo
     command: "/opt/conda/bin/jupyter lab --notebook-dir=/home/main"
   postgres:
-    container_name: ds_postgres_container
+    container_name: mlb_postgres_container
     restart: always
     image: postgres:latest
     networks:
@@ -64,7 +66,7 @@ services:
       - ./../data/backup:/var/lib/postgresql/backup
     # - ./../data/db_init:/docker-entrypoint-initdb.d/
   pgAdmin:
-    container_name: ds_pgAdmin_container
+    container_name: mlb_pgAdmin_container
     image: dpage/pgadmin4
     networks:
       ds_net:
@@ -86,7 +88,7 @@ services:
     # - /path/to/certificate.cert:/certs/server.cert \
     # - /path/to/certificate.key:/certs/server.key \
   pgweb:
-    container_name: ds_pgweb_container
+    container_name: mlb_pgweb_container
     restart: always
     image: sosedoff/pgweb
     networks:
